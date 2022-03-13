@@ -17,5 +17,9 @@ A Backend service for BANGKAEW made up of FastAPI and Docker
 ## How to develop
 
 ```
+> source env/bin/activate
 > python main.py
+
+// exit env
+> deactivate
 ```
