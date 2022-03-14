@@ -4,7 +4,11 @@ services:
   selenium:
     container_name: 'selenium_service'
     image: selenium/standalone-chrome
+    privileged: true
+    hostname: chrome
     restart: unless-stopped
+    ports:
+      - "4444:4444"
     networks:
       - selenium_nw
   app:
