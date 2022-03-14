@@ -7,8 +7,22 @@ services:
       context: .
       dockerfile: Dockerfile.dev
     restart: unless-stopped
+    networks:
+      - backend
     volumes:
       - ./:/app
     ports:
       - 5000:5000
     command: 'python main.py'
+
+  selenium:
+    container_name: selenium-services
+    image: selenium/standalone-chrome
+    restart: unless-stopped
+    networks:
+      - backend
+
+networks:
+  backend:
+    name: services_network
+    driver: bridge

@@ -1,1 +1,24 @@
+<<<<<<< HEAD
 env
+=======
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+.env*
+pip-log.txt
+pip-delete-this-directory.txt
+.tox
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*,cover
+*.log
+.git*
+tests
+scripts
+postman
+>>>>>>> de358bd70303f5cd0f390c9a399c4b1d9acd0d69
