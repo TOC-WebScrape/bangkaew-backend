@@ -2,28 +2,51 @@ version: '3.8'
 
 services:
   selenium:
-    container_name: selenium_services
+    container_name: 'selenium_service'
     image: selenium/standalone-chrome
     restart: unless-stopped
     networks:
-      - backend
+      - selenium_nw
   app:
+    container_name: 'fast_api_service'
+    build:
+      context: ./app
+      dockerfile: Dockerfile.dev
+    restart: unless-stopped
+    networks:
+      - backend_nw
+    volumes:
+      - ./app/:/app
+    ports:
+      - 5000:5000
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: 'python main.py'
+
+  scrape:
     container_name: 'scrape_service'
     build:
-      context: .
+      context: ./selenium
       dockerfile: Dockerfile.dev
     depends_on:
       - selenium
     restart: unless-stopped
     networks:
-      - backend
+      - selenium_nw
     volumes:
-      - ./:/app
+      - ./selenium/:/selenium
     ports:
-      - 5000:5000
+      - 5050:5050
+    environment:
+      - PYTHONUNBUFFERED=1
     command: 'python main.py'
+  
 
 networks:
-  backend:
+  backend_nw:
     name: services_network
+    driver: bridge
+  
+  selenium_nw:
+    name: selenium_network
     driver: bridge
