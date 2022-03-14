@@ -1,6 +1,4 @@
-<<<<<<< HEAD
 env
-=======
 __pycache__
 *.pyc
 *.pyo
@@ -21,4 +19,9 @@ coverage.xml
 tests
 scripts
 postman
->>>>>>> de358bd70303f5cd0f390c9a399c4b1d9acd0d69
+
+.dockerignore
+.gitignore
+.gitattributes
+Dockerfile*
+docker-compose*
