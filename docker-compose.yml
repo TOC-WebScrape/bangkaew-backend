@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   selenium:
-    container_name: selenium_services
+    container_name: 'selenium_service'
     image: selenium/standalone-chrome
     restart: unless-stopped
     networks:
@@ -14,7 +14,7 @@ services:
       dockerfile: Dockerfile.dev
     restart: unless-stopped
     networks:
-      - backend
+      - backend_nw
     volumes:
       - ./app/:/app
     ports:
@@ -43,7 +43,7 @@ services:
   
 
 networks:
-  backend:
+  backend_nw:
     name: services_network
     driver: bridge
   
