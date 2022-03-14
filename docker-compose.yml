@@ -1,11 +1,19 @@
 version: '3.8'
 
 services:
+  selenium:
+    container_name: selenium_services
+    image: selenium/standalone-chrome
+    restart: unless-stopped
+    networks:
+      - backend
   app:
     container_name: 'scrape_service'
     build:
       context: .
       dockerfile: Dockerfile.dev
+    depends_on:
+      - selenium
     restart: unless-stopped
     networks:
       - backend
@@ -14,13 +22,6 @@ services:
     ports:
       - 5000:5000
     command: 'python main.py'
-
-  selenium:
-    container_name: selenium-services
-    image: selenium/standalone-chrome
-    restart: unless-stopped
-    networks:
-      - backend
 
 networks:
   backend:
