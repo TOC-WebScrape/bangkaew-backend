@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+    scrape:
+        container_name: scrape_service
+        build: .
+        image: fastapiapp:latest
+        command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+        ports:
+            - 8005:8000
+        environment:
+            DEBUG: 1
+        volumes:
+            - type: bind
+              source: .
+              target: /app/
+        restart: on-failure
