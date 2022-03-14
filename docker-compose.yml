@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: 'scrape_service'
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    restart: unless-stopped
+    volumes:
+      - ./:/app
+    ports:
+      - 5000:5000
+    command: 'python main.py'
