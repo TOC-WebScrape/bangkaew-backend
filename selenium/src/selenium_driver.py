@@ -21,11 +21,11 @@ class SeleniumDriver():
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument('--ignore-certificate-errors')
         chrome_options.add_argument('--start-maximized')
+        chrome_options.add_argument('--disable-dev-shm-usage')
 
         # Create new Instance of Chrome
         browser = webdriver.Remote(
             os.getenv('REMOTE_SELENIUM_URL', 'http://selenium:4444'), options=chrome_options)
-        browser.implicitly_wait(10)
         return browser
 
     def tear_down(self):
