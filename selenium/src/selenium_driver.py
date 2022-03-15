@@ -1,17 +1,17 @@
 import os
-import time
 from selenium import webdriver
 
 
 class SeleniumDriver():
-    browser = None
-    screenshot_path = ""
-    result_path = ""
+    _browser = None
+    _screenshot_path = "./screenshots/"
+    _result_path = "./results/"
 
-    def __init__(self, screenshot_path, result_path):
-        self.browser = self.set_up()
-        self.screenshot_path = screenshot_path
-        self.result_path = result_path
+    def __init__(self):
+        self._browser = self.set_up()
+
+    def get_browser(self):
+        return self._browser
 
     def set_up(self):
         # Specifying argument as you launch your browser
@@ -29,11 +29,11 @@ class SeleniumDriver():
         return browser
 
     def tear_down(self):
-        self.browser.quit()
+        self._browser.quit()
 
     def fullpage_screenshot(self, name):
-        def S(X): return self.browser.execute_script(
+        def S(X): return self._browser.execute_script(
             'return document.body.parentNode.scroll'+X)
-        self.browser.set_window_size(S('Width'), S('Height'))
-        self.browser.find_element_by_tag_name(
-            'body').screenshot(self.screenshot_path+name)
+        self._browser.set_window_size(S('Width'), S('Height'))
+        self._browser.find_element_by_tag_name(
+            'body').screenshot(self._screenshot_path+name)
