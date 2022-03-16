@@ -12,6 +12,8 @@ class SeleniumDriver():
     _result_path = "./results/"  # Directory for raw data
     _screen_shot = True  # Default screenshot option
     _delay = 10  # Default delay
+    _keep_alive = True  # To keep observe
+    _current_tab = []
 
     def __init__(self):
         self._browser = self.set_up()
@@ -30,7 +32,7 @@ class SeleniumDriver():
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument('--ignore-certificate-errors')
         chrome_options.add_argument('--start-maximized')
-        # ! Pevent "unknown error: session deleted because of page, Take out once on production, see ref at: https://stackoverflow.com/questions/53902507/unknown-error-session-deleted-because-of-page-crash-from-unknown-error-cannot
+        # ! Prevent "unknown error: session deleted because of page, Take out once on production, see ref at: https://stackoverflow.com/questions/53902507/unknown-error-session-deleted-because-of-page-crash-from-unknown-error-cannot
         chrome_options.add_argument('--disable-dev-shm-usage')
 
         # Create new Instance of Chrome
@@ -75,7 +77,7 @@ class SeleniumDriver():
             print("Unable to click element: " + xpath)
 
     # Export text to .txt in a single line
-    def write_to_txt(self, text):
+    def write_to_txt(self, text, name):
         new_text = ''.join([line.strip() for line in text])
-        with open(self._result_path + self.name + '.txt', 'w') as f:
+        with open(self._result_path + name + '.txt', 'w') as f:
             f.write(new_text)

@@ -39,12 +39,17 @@ services:
     restart: unless-stopped
     networks:
       - selenium_nw
+      - spark_nw
     volumes:
       - ./selenium/:/selenium
     ports:
       - 5050:5050
     environment:
       - PYTHONUNBUFFERED=1
+      - REMOTE_SELENIUM_URL=${REMOTE_SELENIUM_URL}
+      - SPARK_MASTER_URL=${SPARK_MASTER_URL}
+      - BINANCE_NAME=${BINANCE_NAME}
+      - BINANCE_GENERAL_URL=${BINANCE_GENERAL_URL}
     command: 'python main.py'
   
 
@@ -56,3 +61,4 @@ networks:
   selenium_nw:
     name: selenium_network
     driver: bridge
+
