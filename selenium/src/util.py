@@ -1,6 +1,5 @@
 from .selenium_driver import SeleniumDriver
 import os
-import re
 
 
 class EnvUtil():

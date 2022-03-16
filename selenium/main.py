@@ -8,7 +8,12 @@ if __name__ == '__main__':
     time.sleep(5)
     print("START SETUP SELENIUM")
 
-    # binance = BinanceScript(name=EnvUtil.get_or_raise("BINANCE_NAME"), url=EnvUtil.get_or_raise("BINANCE_GENERAL_URL"), pre_script_xpath_target=[
-    # ], actual_script_xpath_target=[], post_script_xpath_target=['/html/body/div[1]/div/div/div[4]/div/div[1]'])
+    test = BinanceScript(
+        url="https://www.binance.com/en/trade/BTC_USDT?layout=pro", pre_script_xpath_target=[
+        ], actual_script_xpath_target=[], post_script_xpath_target=['/html/body/div[1]/div/div/div[2]/div/div[1]'])
+    test.new_tab(url="https://www.binance.com/en/trade/ACA_USDT?layout=pro")
+    test.new_tab(url="https://www.binance.com/en/trade/ADX_USDT?layout=pro")
+    test.scrape_all_tab()
+    test.tear_down()
 
     print("FINISH SETUP SELENIUM")
