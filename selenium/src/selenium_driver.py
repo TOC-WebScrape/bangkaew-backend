@@ -13,13 +13,16 @@ class SeleniumDriver():
     _screen_shot = True  # Default screenshot option
     _delay = 10  # Default delay
     _keep_alive = True  # To keep observe
-    _current_tab = []
+    _current_tab_index = 0
 
     def __init__(self):
         self._browser = self.set_up()
 
     def get_browser(self):
         return self._browser
+
+    # def switch_to_right_tab(self):
+        
 
     def toggle_screen_shot(self):
         self._screen_shot = not self._screen_shot
