@@ -62,7 +62,7 @@ class SeleniumDriver():
         chrome_options.add_argument('--ignore-certificate-errors')
         chrome_options.add_argument('--start-maximized')
         # ! Prevent "unknown error: session deleted because of page, Take out once on production, see ref at: https://stackoverflow.com/questions/53902507/unknown-error-session-deleted-because-of-page-crash-from-unknown-error-cannot
-        chrome_options.add_argument('--disable-dev-shm-usage')
+        # chrome_options.add_argument('--disable-dev-shm-usage')
 
         # Create new Instance of Chrome
         browser = webdriver.Remote(
