@@ -72,7 +72,7 @@ class SeleniumDriver():
         self.print_status()
         return browser
 
-    def new_tab(self, url):
+    def new_tab(self, url) -> None:
         try:
             self._browser.switch_to.new_window('tab')
             WebDriverWait(self._browser, self._delay
