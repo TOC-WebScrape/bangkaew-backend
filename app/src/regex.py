@@ -2,12 +2,12 @@ import requests
 import re
 
 START_DIV_CSS_NAME = 'css-1vuj9rf'
+COIN_DIV_CLASS_NAME = 'css-vlibs4'
 
 page_html = requests.get('https://www.binance.com/en/markets').text
-reqex_result = re.search(START_DIV_CSS_NAME, page_html)
-start_ind = reqex_result.start()
-
-# print(start_ind)
-# print(page_html[start_ind:start_ind+200:])
-
+regex_result = re.search(START_DIV_CSS_NAME, page_html)
+start_ind = regex_result.start()
 page_html = page_html[start_ind::]
+
+regex_result = re.findall(COIN_DIV_CLASS_NAME, page_html)
+print(len(regex_result))
