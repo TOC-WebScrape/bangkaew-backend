@@ -1,18 +1,15 @@
 from .script_template import ScriptTemplate
 
 
-class BinanceScript(ScriptTemplate):
+class KuCoinScript(ScriptTemplate):
     def __init__(self, url, pre_script_xpath_target, actual_script_xpath_target, post_script_xpath_target):
         super().__init__(url=url, pre_script_xpath_target=pre_script_xpath_target,
                          actual_script_xpath_target=actual_script_xpath_target, post_script_xpath_target=post_script_xpath_target)
 
     def pre_script(self, xpath_target):
-        actual_x_path = xpath_target[0]
-        # Navigate to target page number
-        if self.get_current_tab_index() + 1 != 1:
-            actual_x_path = xpath_target[0].replace(
-                "%", str(self.get_current_tab_index()+2))
-            self.wait_to_load_and_click(actual_x_path)
+        # Wait to render
+        self.wait_to_load_and_click(xpath_target[0])
+        self.wait_to_load_and_click(xpath_target[1])
 
     def post_script(self, xpath_target, name):
         # Extract raw HTML
@@ -25,5 +22,6 @@ class BinanceScript(ScriptTemplate):
     def format_name(self, index):
         url = self.get_list_tab()[index]
         domain_name = url.replace("https://www.", "")
-        domain_name = domain_name.replace(".com/en/markets/spot-USDT", "")
+        domain_name = domain_name.replace(
+            ".com/markets?spm=kcWeb.B1homepage.Header3.1", "")
         return domain_name

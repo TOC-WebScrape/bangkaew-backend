@@ -145,8 +145,14 @@ class SeleniumDriver():
     def write_to_txt(self, text, name):
         try:
             save_path = self._result_path + name + '.txt'
-            new_text = ''.join([line.strip() for line in text])
+            # with open(save_path, 'w') as f:
+            #     f.write(text)
+            # new_text = ''.join([line.strip() for line in text])
+            new_text = text.rstrip()
+            a_list = new_text.split()
+            new_text = " ".join(a_list)
             with open(save_path, 'w') as f:
                 f.write(new_text)
+
         except:
             print("Fail to write to txt: " + save_path)
