@@ -12,7 +12,7 @@ class SeleniumDriver():
     _browser = None  # Instance driver
     _screenshot_path = "./screenshots/"  # Directory for screenshot
     _result_path = "./results/"  # Directory for raw data
-    _screen_shot = True  # Default screenshot option
+    _screen_shot = True  # Default screenshot option boolean
     _delay = 10  # Default delay
 
     _current_tab_index = 0  # Start at 0 (First tab)
@@ -97,7 +97,7 @@ class SeleniumDriver():
         try:
             if self.get_total_number_of_tab() == 1:
                 self.tear_down()
-                print("Tear down broswer because close the last tab")
+                print("Tear down broswer because the last tab has been close")
             else:
                 self.remove_list_tab(index=self.get_current_tab_index())
                 self.get_browser().close()
@@ -145,8 +145,14 @@ class SeleniumDriver():
     def write_to_txt(self, text, name):
         try:
             save_path = self._result_path + name + '.txt'
-            new_text = ''.join([line.strip() for line in text])
+            # with open(save_path, 'w') as f:
+            #     f.write(text)
+            # new_text = ''.join([line.strip() for line in text])
+            new_text = text.rstrip()
+            a_list = new_text.split()
+            new_text = " ".join(a_list)
             with open(save_path, 'w') as f:
                 f.write(new_text)
+
         except:
             print("Fail to write to txt: " + save_path)

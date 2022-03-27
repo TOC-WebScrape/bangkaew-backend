@@ -16,4 +16,5 @@ class EnvUtil():
 
 class UnconfiguredEnvironment(Exception):
     def __init__(self, target_key):
-        raise Exception(".env error: " + target_key + " does not exist")
+        raise Exception("Unconfigured Environment: " +
+                        target_key + " does not exist!")
