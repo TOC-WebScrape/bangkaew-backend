@@ -1,2 +1,3 @@
 selenium==4.1.3
 url-parser==3.0.3
+joblib==1.1.0

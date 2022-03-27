@@ -8,24 +8,43 @@ services:
     hostname: chrome
     restart: unless-stopped
     shm_size: 2gb
+    environment:
+      - SE_NODE_MAX_SESSIONS=4
+      - SE_NODE_OVERRIDE_MAX_SESSIONS=true
+      - START_XVFB=false
     ports:
       - "4444:4444"
     networks:
       - selenium_nw
+  redis:
+    image: "redis:alpine"
+    command: redis-server /usr/local/etc/redis/redis.conf
+    volumes:
+      - ./redis/data:/data
+      - ./redis/conf:/usr/local/etc/redis
+    networks:
+      - data_sharing
   app:
     container_name: 'fast_api_service'
     build:
       context: ./app
       dockerfile: Dockerfile.dev
+    depends_on:
+      - selenium
+      - redis
     restart: unless-stopped
     networks:
       - backend_nw
+      - data_sharing
     volumes:
       - ./app/:/app
     ports:
       - 5000:5000
     environment:
       - PYTHONUNBUFFERED=1
+      - REDIS_URL=${REDIS_URL}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_PASS=${REDIS_PASS}
     command: 'python main.py'
 
   scrape:
@@ -35,9 +54,11 @@ services:
       dockerfile: Dockerfile.dev
     depends_on:
       - selenium
+      - redis
     restart: unless-stopped
     networks:
       - selenium_nw
+      - data_sharing
     volumes:
       - ./selenium/:/selenium
     ports:
@@ -48,15 +69,19 @@ services:
       - SPARK_MASTER_URL=${SPARK_MASTER_URL}
       - BINANCE_NAME=${BINANCE_NAME}
       - BINANCE_GENERAL_URL=${BINANCE_GENERAL_URL}
+      - REDIS_URL=${REDIS_URL}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_PASS=${REDIS_PASS}
     command: 'python main.py'
-  
 
 networks:
   backend_nw:
     name: services_network
     driver: bridge
-  
+
+  data_sharing:
+    driver: bridge
+
   selenium_nw:
     name: selenium_network
     driver: bridge
-
