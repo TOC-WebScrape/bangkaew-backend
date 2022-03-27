@@ -1,21 +1,35 @@
-from typing import List
-from fastapi import WebSocket
+import os
+from urllib.parse import urlparse
+import redis
+channel = 'test'
+
+redis_url = os.getenv('REDIS_URL')
+redis_port = os.getenv('REDIS_PORT')
+redis_password = os.getenv('REDIS_PASS')
+
+connection = redis.StrictRedis.from_url(
+    url=redis_url, port=redis_port, db=0, password=redis_password, decode_responses=True)
 
 
-class ConnectionManager:
+class PubSubListener():
     def __init__(self):
-        self.active_connections: List[WebSocket] = []
+        self.clients = []
+        self.pubsub = connection.pubsub(ignore_subscribe_messages=False)
+        self.pubsub.subscribe(**{channel: self.handler})
+        self.thread = self.pubsub.run_in_thread(sleep_time=0.001)
 
-    async def connect(self, websocket: WebSocket):
-        await websocket.accept()
-        self.active_connections.append(websocket)
+    def register(self, client):
+        self.clients.append(client)
 
-    def disconnect(self, websocket: WebSocket):
-        self.active_connections.remove(websocket)
+    def handler(self, message):
+        _message = message['data']
 
-    async def send_personal_message(self, message: str, websocket: WebSocket):
-        await websocket.send_text(message)
+        if type(_message) != int:
+            self.send(_message)
 
-    async def broadcast(self, message: str):
-        for connection in self.active_connections:
-            await connection.send_text(message)
+    def send(self, data):
+        for client in self.clients:
+            try:
+                client.send(data)
+            except Exception:
+                self.clients.remove(client)

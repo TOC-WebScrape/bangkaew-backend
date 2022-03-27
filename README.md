@@ -1,6 +1,6 @@
 # Bangkaew-Backend
 
-A Backend service for BANGKAEW made up of FastAPI and Selenium on Docker
+A Backend service for BANGKAEW made up of FastAPI and seleniarm/standalone-chromium on Docker
 
 ## Authors
 
@@ -48,8 +48,8 @@ Get inside container
 
 ## Container Specification
 
-| Container Name      | Port        |    Network    | Description                                                            |
-| :------------------ | :---------- | :-----------: | ---------------------------------------------------------------------- |
-| `selenium_services` | `-`         | `selenium_nw` | Automates browsers                                                     |
-| `fast_api_service`  | `5000:5000` |   `backend`   | **Required selenium_services**. Web framework for building APIs        |
-| `scrape_service`    | `5050:5050` | `selenium_nw` | **Required selenium_services**. Web scraping service that use selenium |
+| Container Name      | Exposed Port |    Network    | Description                                                            |
+| :------------------ | :----------- | :-----------: | ---------------------------------------------------------------------- |
+| `selenium_services` | `4444:4444`  | `selenium_nw` | Automates browsers                                                     |
+| `fast_api_service`  | `5000:5000`  |   `backend`   | **Required selenium_services**. Web framework for building APIs        |
+| `scrape_service`    | `5050:5050`  | `selenium_nw` | **Required selenium_services**. Web scraping service that use selenium |
