@@ -5,7 +5,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.common.keys import Keys
+from .custom_regex import extract_coin_data
+import json
 
 
 class SeleniumDriver():
@@ -151,8 +152,15 @@ class SeleniumDriver():
             new_text = text.rstrip()
             a_list = new_text.split()
             new_text = " ".join(a_list)
+
+            dict = extract_coin_data(data=new_text)
+            # for i in range(50):
+            #     print(i, list[i])
+
+            result = json.dumps(dict)
+            print(result)
             with open(save_path, 'w') as f:
-                f.write(new_text)
+                f.write(result)
 
         except:
             print("Fail to write to txt: " + save_path)
