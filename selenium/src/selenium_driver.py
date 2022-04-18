@@ -146,19 +146,7 @@ class SeleniumDriver():
     def write_to_txt(self, text, name):
         try:
             save_path = self._result_path + name + '.txt'
-            # with open(save_path, 'w') as f:
-            #     f.write(text)
-            # new_text = ''.join([line.strip() for line in text])
-            new_text = text.rstrip()
-            a_list = new_text.split()
-            new_text = " ".join(a_list)
-
-            dict = extract_coin_data(data=new_text)
-            # for i in range(50):
-            #     print(i, list[i])
-
-            result = json.dumps(dict)
-            print(result)
+            result = text
             with open(save_path, 'w') as f:
                 f.write(result)
 

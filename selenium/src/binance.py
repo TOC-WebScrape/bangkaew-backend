@@ -1,3 +1,4 @@
+import time
 from .script_template import ScriptTemplate
 
 
@@ -6,15 +7,8 @@ class BinanceScript(ScriptTemplate):
         super().__init__(url=url, pre_script_xpath_target=pre_script_xpath_target,
                          actual_script_xpath_target=actual_script_xpath_target, post_script_xpath_target=post_script_xpath_target)
 
-    def pre_script(self, xpath_target):
-        actual_x_path = xpath_target[0]
-        # Navigate to target page number
-        if self.get_current_tab_index() + 1 != 1:
-            actual_x_path = xpath_target[0].replace(
-                "%", str(self.get_current_tab_index()+2))
-            self.wait_to_load_and_click(actual_x_path)
-
     def post_script(self, xpath_target, name):
+        time.sleep(2)
         # Extract raw HTML
         raw_data = self.get_element(xpath_target[0])
         current_page_number = self.get_current_tab_index() + 1

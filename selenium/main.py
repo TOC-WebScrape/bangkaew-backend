@@ -24,64 +24,58 @@ if __name__ == '__main__':
     print("START SELENIUM")
 
     tasks = [
-        # {
-        #     "driver": BinanceScript,
-        #     "url_tasks": {
-        #         "pre_script": ['/html/body/div[1]/div/div/main/div/div[2]/div/div/div[2]/div[3]/div/button[%]'],
-        #         "real_script": [],
-        #         "post_script": [
-        #             '/html/body/div[1]/div/div/main/div/div[2]/div/div/div[2]/div[2]/div/div[2]'
-        #         ],
-        #         "urls": [
-        #             "https://www.binance.com/en/markets/spot-USDT",
-        #             "https://www.binance.com/en/markets/spot-USDT",
-        #             "https://www.binance.com/en/markets/spot-USDT",
-        #             "https://www.binance.com/en/markets/spot-USDT",
-        #             "https://www.binance.com/en/markets/spot-USDT",
-        #             "https://www.binance.com/en/markets/spot-USDT",
-        #             "https://www.binance.com/en/markets/spot-USDT",
-        #         ],
-        #     }
-        # },
-        # {
-        #     "driver": GateScript,
-        #     "url_tasks": {
-        #         "pre_script": ['/html/body/div[1]/div[1]/div/div/div[3]/div/div/table/tbody'],
-        #         "real_script": [],
-        #         "post_script": [
-        #             '/html/body/div[1]/div[1]/div/div/div[3]/div/div/table/tbody'
-        #         ],
-        #         "urls": [
-        #             "https://www.gate.io/th/marketlist?tab=usdt",
-        #         ],
-        #     }
-        # },
+        {
+            "driver": BinanceScript,
+            "url_tasks": {
+                "pre_script": [],
+                "real_script": [],
+                "post_script": [
+                    '/html/body/div[1]/div/div/main/div/div[2]/div/div/div[2]/div[2]/div/div[2]'
+                ],
+                "urls": [
+                    "https://www.binance.com/en/markets/spot-USDT",
+                ],
+            }
+        },
+        {
+            "driver": GateScript,
+            "url_tasks": {
+                "pre_script": [],
+                "real_script": [],
+                "post_script": [
+                    '/html/body/div[1]/div[1]/div/div/div[3]/div/div/table/tbody'
+                ],
+                "urls": [
+                    "https://www.gate.io/th/marketlist?tab=usdt",
+                ],
+            }
+        },
         {
             "driver": KuCoinScript,
             "url_tasks": {
-                "pre_script": ['/html/body/div[1]/div/div/div[3]/div/div[3]/div/div/div/div[1]/div[2]/div[1]/div/div[2]'],
+                "pre_script": ['/html/body/div[1]/div/div/div[3]/div/div[3]/div/div/div/div[1]/div[1]/div[1]/div/div[3]/div/button[2]', '/html/body/div[1]/div/div/div[3]/div/div[3]/div/div/div/div[1]/div[2]/div[1]/div/div[2]'],
                 "real_script": [],
                 "post_script": [
-                    '/html/body/div[1]/div/div/div[3]/div/div[3]/div/div/div/div[3]/div/div[2]/div[2]/div/div/div/div'
+                    '/html/body/div[1]/div/div/div[3]/div/div[3]/div/div/div/div[3]/div/div[1]/div[2]/div/div/div/div/div/div/div/div/table/tbody'
                 ],
                 "urls": [
                     "https://www.kucoin.com/markets?spm=kcWeb.B1homepage.Header3.1",
                 ],
             }
         },
-        # {
-        #     "driver": BitMartScript,
-        #     "url_tasks": {
-        #         "pre_script": ['/html/body/div[1]/div/div/div[2]/div[2]/div[2]/div[1]/div[3]/div[1]/div[2]/div[1]/div/div/div/div[3]'],
-        #         "real_script": [],
-        #         "post_script": [
-        #             '/html/body/div[1]/div/div/div[2]/div[2]/div[2]/div[1]/div[3]/div[1]/div[2]/div[2]/div[2]/div/ul'
-        #         ],
-        #         "urls": [
-        #             "https://www.bitmart.com/markets/en?markettype=spot",
-        #         ],
-        #     }
-        # }
+        {
+            "driver": BitMartScript,
+            "url_tasks": {
+                "pre_script": ['/html/body/div[1]/div/div/div[2]/div[2]/div[2]/div[1]/div[3]/div[1]/div[2]/div[1]/div/div/div/div[3]'],
+                "real_script": [],
+                "post_script": [
+                    '/html/body/div[1]/div/div/div[2]/div[2]/div[2]/div[1]/div[3]/div[1]/div[2]/div[2]/div[2]/div/ul'
+                ],
+                "urls": [
+                    "https://www.bitmart.com/markets/en?markettype=spot",
+                ],
+            }
+        }
     ]
 
     Parallel(n_jobs=-1)(delayed(task_function)(task) for task in tasks)
