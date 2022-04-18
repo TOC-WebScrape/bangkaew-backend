@@ -1,3 +1,4 @@
+import time
 from .script_template import ScriptTemplate
 
 
@@ -7,11 +8,12 @@ class KuCoinScript(ScriptTemplate):
                          actual_script_xpath_target=actual_script_xpath_target, post_script_xpath_target=post_script_xpath_target)
 
     def pre_script(self, xpath_target):
-        # Wait to render
+        time.sleep(4)
         self.wait_to_load_and_click(xpath_target[0])
         self.wait_to_load_and_click(xpath_target[1])
 
     def post_script(self, xpath_target, name):
+        time.sleep(2)
         # Extract raw HTML
         raw_data = self.get_element(xpath_target[0])
         current_page_number = self.get_current_tab_index() + 1
