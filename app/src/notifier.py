@@ -45,6 +45,11 @@ class Notifier:
             self.connections[room_name].append(websocket)
         print(f"CONNECTED : {room_names}")
 
+    async def revoke(self, websocket: WebSocket, room_names: List[str]):
+        for room_name in room_names:
+            self.connections[room_name].remove(websocket)
+        print(f"REVOKED : {room_names}")
+
     def remove(self, websocket: WebSocket, room_names: List[str]):
         for room_name in room_names:
             self.connections[room_name].remove(websocket)

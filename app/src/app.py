@@ -1,10 +1,15 @@
 import os
+import logging
 import asyncio
-import async_timeout
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
-from redis import asyncio as aioredis
+import aioredis
+from aioredis.client import PubSub, Redis
 from .notifier import Notifier
 from fastapi.responses import HTMLResponse
+
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 redis_url = os.getenv('REDIS_URL')
@@ -13,8 +18,6 @@ redis_password = os.getenv('REDIS_PASS')
 
 
 app = FastAPI()
-redis = aioredis.from_url(
-    f"{redis_url}:{redis_port}", password=redis_password, decode_responses=True)
 notifier = Notifier()
 
 html = """
@@ -27,63 +30,46 @@ html = """
     <title>Test Websocket</title>
   </head>
   <body>
+    <h1>Request Subscript</h1>
+    <form action="" onsubmit="reqMessage(event)">
+        <input type="text" id="reqText" autocomplete="off"/>
+        <button>Send</button>
+    </form>
+    <h1>Revoke Subscript</h1>
+    <form action="" onsubmit="revokeMessage(event)">
+        <input type="text" id="revokeTaxt" autocomplete="off"/>
+        <button>Send</button>
+    </form>
     <ul id='messages'>
     <script type="text/javascript">
       const ws = new WebSocket("ws://localhost:5000/ws");
-      ws.send({"request": ["BTC", "ETH"]})
       const messages = document.getElementById('messages')
-      ws.onmessage = function (event) {
+      ws.addEventListener('open', function (event){
+        ws.send(JSON.stringify({"request": ["BTC", "ETH"]}));
+      });
+      ws.addEventListener('message', function (event){
         console.log(event.data);
         const message = document.createElement('li')
         const content = document.createTextNode(event.data)
         message.appendChild(content)
         messages.appendChild(message)
-      };
+      });
+      function reqMessage(event) {
+                var input = document.getElementById("reqText")
+                ws.send(JSON.stringify({"request": [input.value]}))
+                input.value = ''
+                event.preventDefault()
+        }
+        function revokeMessage(event) {
+                var input = document.getElementById("revokeTaxt")
+                ws.send(JSON.stringify({"revoke": [input.value]}))
+                input.value = ''
+                event.preventDefault()
+        }
     </script>
   </body>
 </html>
 """
-
-
-PUBSUB = None
-
-
-async def init_pubsub():
-    while True:
-        try:
-            async with async_timeout.timeout(1):
-                message = await PUBSUB.get_message(ignore_subscribe_messages=True)
-                if message is not None:
-                    print(f"(Reader) Message Received: {message}")
-                    data = message["data"]
-                    room = message["channel"][len("channel:"):]
-                    await notifier._notify({"data": data, "room": room}, room)
-                    if message["data"] == STOPWORD:
-                        print("(Reader) STOP")
-                        break
-                await asyncio.sleep(0.01)
-        except asyncio.TimeoutError:
-            pass
-
-
-async def consumer_handler(ws: WebSocket):
-    try:
-        while True:
-            message = await ws.receive_json()
-            if (len(message["request"]) > 0):
-                await notifier.request_room(ws, message["request"])
-
-    except WebSocketDisconnect as exc:
-        pass
-
-
-@app.on_event('startup')
-async def startup_event():
-    global PUBSUB
-    pubsub = redis.pubsub()
-    await pubsub.psubscribe("channel:*")
-    PUBSUB = pubsub
-    asyncio.create_task(init_pubsub())
 
 
 @app.get("/")
@@ -95,13 +81,54 @@ STOPWORD = "END"
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
-    # rooms_req = websocket.query_params["room_name"]
-    # room_names = rooms_req.split(',')
-    # room_names = [room_name]
     await notifier.connect(websocket)
+    await redis_connector(websocket)
+
+
+async def redis_connector(websocket: WebSocket):
+    async def consumer_handler(ws: WebSocket):
+        try:
+            while True:
+                message = await ws.receive_json()
+                print(message)
+                if "request" in message:
+                    await notifier.request_room(websocket, message["request"])
+                if "revoke" in message:
+                    await notifier.revoke(ws, message["revoke"])
+        except WebSocketDisconnect as exc:
+            # TODO this needs handling better
+            logger.error(exc)
+
+    async def producer_handler(pubsub: PubSub):
+        await pubsub.psubscribe("channel:*")
+        try:
+            while True:
+                message = await pubsub.get_message(ignore_subscribe_messages=True)
+                if message is not None:
+                    print(f"(Reader) Message Received: {message}")
+                    data = message["data"]
+                    room = message["channel"][len("channel:"):]
+                    await notifier._notify({"data": data, "room": room}, room)
+                    if message["data"] == STOPWORD:
+                        print("(Reader) STOP")
+                        break
+        except Exception as exc:
+            # TODO this needs handling better
+            logger.error(exc)
+
+    conn = await get_redis_pool()
+    pubsub = conn.pubsub()
+
+    consumer_task = consumer_handler(ws=websocket)
+    producer_task = producer_handler(pubsub=pubsub)
     done, pending = await asyncio.wait(
-        [consumer_handler], return_when=asyncio.FIRST_COMPLETED,
+        [consumer_task, producer_task], return_when=asyncio.FIRST_COMPLETED,
     )
-    print(f"Done task: {done}")
+    logger.debug(f"Done task: {done}")
     for task in pending:
+        logger.debug(f"Canceling task: {task}")
         task.cancel()
+
+
+async def get_redis_pool():
+    return await aioredis.from_url(f"{redis_url}:{redis_port}", password=redis_password, encoding="utf-8", decode_responses=True)
