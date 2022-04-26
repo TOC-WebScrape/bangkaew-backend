@@ -53,7 +53,9 @@ if __name__ == '__main__':
         {
             "driver": KuCoinScript,
             "url_tasks": {
-                "pre_script": ['/html/body/div[1]/div/div/div[3]/div/div[3]/div/div/div/div[1]/div[1]/div[1]/div/div[3]/div/button[2]', '/html/body/div[1]/div/div/div[3]/div/div[3]/div/div/div/div[1]/div[2]/div[1]/div/div[2]'],
+                "pre_script": [
+                    '/html/body/div[1]/div/div/div[3]/div/div[1]/div/div/div[2]/div/button[2]',
+                    '/html/body/div[1]/div/div/div[3]/div/div[3]/div/div/div/div[1]/div[1]/div[1]/div/div[3]/div/button[2]'],
                 "real_script": [],
                 "post_script": [
                     '/html/body/div[1]/div/div/div[3]/div/div[3]/div/div/div/div[3]/div/div[1]/div[2]/div/div/div/div/div/div/div/div/table/tbody'
