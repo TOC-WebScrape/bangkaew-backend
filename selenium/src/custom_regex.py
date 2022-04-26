@@ -20,14 +20,24 @@ COIN_DATA_EXTRACT = ''
 # ในการใช้งานไฟล์สามารถดูได้จากไฟล์ custom_regex_example.py ได้
 
 
-def extract_coin_data(data, option='binance'):
+def extract_coin_data(data, option):
 
     try:
-        if option == 'binance':
+        if option == 'bn':
+            COIN_DIV_CLASS_NAME = '((<div direction=\"ltr\".*?)Trade)'
+            COIN_DATA_EXTRACT = '>(.*?)<'
+        elif option == 'bm':
+            COIN_DIV_CLASS_NAME = '((<div direction=\"ltr\".*?)Trade)'
+            COIN_DATA_EXTRACT = '>(.*?)<'
+        elif option == 'g':
+            COIN_DIV_CLASS_NAME = '((<div direction=\"ltr\".*?)Trade)'
+            COIN_DATA_EXTRACT = '>(.*?)<'
+        elif option == 'kc':
             COIN_DIV_CLASS_NAME = '((<div direction=\"ltr\".*?)Trade)'
             COIN_DATA_EXTRACT = '>(.*?)<'
 
         coins_data = re.findall(COIN_DIV_CLASS_NAME, data)
+        # coin_data = data
 
         coin_data = pd.DataFrame()
         cnt = 0
@@ -92,6 +102,13 @@ def extract_coin_data(data, option='binance'):
 
 
 if __name__ == "__main__":
-    op = extract_coin_data(open('../results/binance1.txt', 'r').read())
+    # op = extract_coin_data(
+    #     open('../results/binance1.txt', 'r').read(), option='bn')
+    # op = extract_coin_data(
+    #     open('../results/bitmart1.txt', 'r').read(), option='bm')
+    op = extract_coin_data(
+        open('../results/gate1.txt', 'r').read(), option='g')
+    # op = extract_coin_data(
+    #     open('../results/kucoin1.txt', 'r').read(), option='kc')
     # print(type(op))
     print(op)
