@@ -8,7 +8,7 @@ class KuCoinScript(ScriptTemplate):
                          actual_script_xpath_target=actual_script_xpath_target, post_script_xpath_target=post_script_xpath_target)
 
     def pre_script(self, xpath_target):
-        time.sleep(4)
+        time.sleep(10)
         self.wait_to_load_and_click(xpath_target[0])
         self.wait_to_load_and_click(xpath_target[1])
 
