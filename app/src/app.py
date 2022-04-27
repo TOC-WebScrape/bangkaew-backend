@@ -1,6 +1,6 @@
+import re
 from fastapi import FastAPI, responses
 import pandas as pd
-import re
 
 app = FastAPI()
 
@@ -64,13 +64,14 @@ def get_name_currency_list():
     list_name = []
     for filename in FILENAMES:
         try:
-            df = pd.read_csv(f"../data/{filename}.csv")
+            df = pd.read_csv(f"./data/{filename}.csv")
             list_name = df["name"].tolist()
+            for n in list_name:
+                x = n+'\n'
+                names[x] = names.get(x, None)
         except:
-            break
-    for n in list_name:
-        names[n] = names.get(n, None)
-    return tuple(names.keys())
+            continue
+    return "\n".join(names.keys())
 
 
 CURRENCY_NAME = get_name_currency_list()
@@ -80,7 +81,7 @@ def get_data_currency(currency_id: str, cex: str):
     data = {}
     for filename in cex:
         try:
-            df = pd.read_csv(f"../data/{filename}.csv")
+            df = pd.read_csv(f"./data/{filename}.csv")
             data[filename] = df.loc[df["name"] ==
                                     f"{currency_id.upper()}/USDT"].to_dict()
         except:
@@ -94,10 +95,10 @@ async def suggestion(text: str = ""):
         return "Please type something"
     try:
         matches = re.findall(r".*{0}.*".format(text),
-                             CURRENCY_NAME, re.IGNORECASE)
+                             CURRENCY_NAME, re.IGNORECASE | re.MULTILINE)
     except TypeError:
         return responses.JSONResponse({"Error": "Currency name not found"}, 500)
-    return {"suggest": matches}
+    return {"suggest": matches[:10]}
 
 
 @app.get("/api/currency/{name}")
