@@ -22,7 +22,7 @@ class KuCoinScript(ScriptTemplate):
         self.write_to_txt(text=raw_data.get_attribute(
             "innerHTML"), name=actual_name)
         output = extract_coin_data(data=raw_data, option='bm')
-        output.to_csv('../../data/'+actual_name+'.csv', index=False)
+        output.to_csv('../data/'+actual_name+'.csv', index=False)
 
     def format_name(self, index):
         url = self.get_list_tab()[index]
