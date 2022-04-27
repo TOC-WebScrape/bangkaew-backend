@@ -230,21 +230,19 @@ def extract_kucoin_coin_data(coins_data):
         # sys.exit()
 
         for i in range(len(regex_resault)):
-            if regex_resault[i] != '' and regex_resault[i] != ' ':
+            if regex_resault[i] != '' and regex_resault[i] != ' ' and regex_resault[i] != '0':
                 l.append(str(regex_resault[i]).strip())
-        print("KU LEN :", len(l), l)
+        # print("KU LEN :", len(l), l)
         if len(l) == 12:
-            name, _, _, price1, price2, _, change, _, _, _, _, _ = l[
+            name, _, _, price1, price2, _, change, market_cap, volume, _, _, _ = l[
                 ::]
         else:
-            name, _, _, price1, _, price2, _, change, _, _, _, _, _ = l[
+            name, _, _, price1, price2, _, change, _, market_cap, volume, _, _, _ = l[
                 ::]
-        market_cap = None
         high_low = None
-        volume = None
 
         name_list.append(name)
-        price_list.append(price1 + price2)
+        price_list.append(price1)
         change_list.append(change)
         high_low_list.append(high_low)
         volume_list.append(volume)
@@ -260,15 +258,14 @@ def extract_kucoin_coin_data(coins_data):
 
 
 if __name__ == "__main__":
-    op = extract_coin_data(
-        open('../results/binance1.txt', 'r').read(), option='bn')
+    # op = extract_coin_data(
+    #     open('../results/binance1.txt', 'r').read(), option='bn')
     # op = extract_coin_data(
     #     open('../results/bitmart1.txt', 'r').read(), option='bm')
     # op = extract_coin_data(
     #     open('../results/gate1.txt', 'r').read(), option='g')
-    # op = extract_coin_data(
-    #     open('../results/kucoin1.txt', 'r').read(), option='kc')
-    # print(type(op))
+    op = extract_coin_data(
+        open('../results/kucoin1.txt', 'r').read(), option='kc')
     print(op)
 
     # s = ''.join(open('../results/bitmart1.txt', 'r').read().split('\t'))
