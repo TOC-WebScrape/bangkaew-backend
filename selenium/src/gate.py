@@ -9,7 +9,7 @@ class GateScript(ScriptTemplate):
                          actual_script_xpath_target=actual_script_xpath_target, post_script_xpath_target=post_script_xpath_target)
 
     def post_script(self, xpath_target, name):
-        time.sleep(4)
+        time.sleep(2)
         # Extract raw HTML
         raw_data = self.get_element(xpath_target[0])
         data_to_write = raw_data.get_attribute(

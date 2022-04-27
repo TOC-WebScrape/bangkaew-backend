@@ -26,28 +26,28 @@ def extract_coin_data(data, option):
 
     try:
         if option == 'bn':
-            print("\n\nBINANCE")
+            # print("\n\nBINANCE")
             COIN_DIV_CLASS_NAME = '((<div direction=\"ltr\".*?)Trade)'
             coins_data_list = re.findall(COIN_DIV_CLASS_NAME, data)
             coin_data = extract_binance_coin_data(coins_data_list)
         elif option == 'bm':
-            print("\n\nBITMART")
+            # print("\n\nBITMART")
             COIN_DIV_CLASS_NAME = '(<tr .*?<\/tr>)'
             coins_data_list = re.findall(COIN_DIV_CLASS_NAME, data)
             coin_data = extract_bitmart_coin_data(coins_data_list)
         elif option == 'g':
-            print("\n\nGATE")
+            # print("\n\nGATE")
             COIN_DIV_CLASS_NAME = '(<tr .*?<\/tr>)'
             coins_data_list = re.findall(COIN_DIV_CLASS_NAME, data)
             coin_data = extract_gate_coin_data(coins_data_list)
         elif option == 'kc':
-            print("\n\nKUCOIN")
+            # print("\n\nKUCOIN")
             COIN_DIV_CLASS_NAME = '(<tr .*?<\/tr>)'
             coins_data_list = re.findall(COIN_DIV_CLASS_NAME, data)
             coin_data = extract_kucoin_coin_data(coins_data_list)
 
     except Exception as e:
-        print('\n\nCATCH! -> ', str(e), '\n\n')
+        print('CATCH! -> ', str(e))
         coin_data = pd.DataFrame()
 
     return coin_data
