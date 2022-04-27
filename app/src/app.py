@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, responses
 import pandas as pd
 import re
 
@@ -61,23 +61,30 @@ FILENAMES = ["bn", "bm", "g", "kc"]
 
 def get_name_currency_list():
     names = {}
+    list_name = []
     for filename in FILENAMES:
-        data = pd.read_csv(f"../data/{filename}.csv")
-        list_name = data["name"].tolist()
+        try:
+            df = pd.read_csv(f"../data/{filename}.csv")
+            list_name = df["name"].tolist()
+        except:
+            break
     for n in list_name:
         names[n] = names.get(n, None)
     return tuple(names.keys())
 
 
-list_name = get_name_currency_list()
+CURRENCY_NAME = get_name_currency_list()
 
 
 def get_data_currency(currency_id: str, cex: str):
     data = {}
     for filename in cex:
-        df = pd.read_csv(f"../data/{filename}.csv")
-        data[filename] = df.loc[df["name"] ==
-                                f"{currency_id.upper()}/USDT"].to_dict()
+        try:
+            df = pd.read_csv(f"../data/{filename}.csv")
+            data[filename] = df.loc[df["name"] ==
+                                    f"{currency_id.upper()}/USDT"].to_dict()
+        except:
+            break
     return data
 
 
@@ -85,12 +92,15 @@ def get_data_currency(currency_id: str, cex: str):
 async def suggestion(text: str = ""):
     if len(text) == 0:
         return "Please type something"
-    matches = re.findall(r".*{0}.*".format(text), list_name,
-                         re.MULTILINE | re.IGNORECASE)
+    try:
+        matches = re.findall(r".*{0}.*".format(text), CURRENCY_NAME,
+                             re.MULTILINE | re.IGNORECASE)
+    except TypeError:
+        return responses.JSONResponse({"Error": "Currency name not found"}, 500)
     return {"suggest": matches}
 
 
-@app.get("/api/currency/{id}")
-async def currency(id: str, cex: str = "bn,bm,g,kc"):
+@app.get("/api/currency/{name}")
+async def currency(name: str, cex: str = "bn,bm,g,kc"):
     cex = cex.split(',')
-    return get_data_currency(id, cex)
+    return get_data_currency(name, cex)
