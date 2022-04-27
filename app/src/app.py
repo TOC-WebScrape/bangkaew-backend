@@ -55,12 +55,13 @@ app = FastAPI()
 #             "GLMR/USDT\n"
 #             "DAR/USDT")
 
-filenames = ["bn", "bm", "g", "kc"]
+
+FILENAMES = ["bn", "bm", "g", "kc"]
 
 
 def get_name_currency_list():
     names = {}
-    for filename in filenames:
+    for filename in FILENAMES:
         data = pd.read_csv(f"../data/{filename}.csv")
         list_name = data["name"].tolist()
     for n in list_name:
@@ -71,9 +72,9 @@ def get_name_currency_list():
 list_name = get_name_currency_list()
 
 
-def get_data_currency(currency_id: str):
+def get_data_currency(currency_id: str, cex: str):
     data = {}
-    for filename in filenames:
+    for filename in cex:
         df = pd.read_csv(f"../data/{filename}.csv")
         data[filename] = df.loc[df["name"] ==
                                 f"{currency_id.upper()}/USDT"].to_dict()
@@ -90,5 +91,6 @@ async def suggestion(text: str = ""):
 
 
 @app.get("/api/currency/{id}")
-async def currency(id: str):
-    return get_data_currency(id)
+async def currency(id: str, cex: str = "bn,bm,g,kc"):
+    cex = cex.split(',')
+    return get_data_currency(id, cex)
