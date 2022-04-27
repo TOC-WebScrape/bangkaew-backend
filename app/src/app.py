@@ -93,8 +93,8 @@ async def suggestion(text: str = ""):
     if len(text) == 0:
         return "Please type something"
     try:
-        matches = re.findall(r".*{0}.*".format(text), CURRENCY_NAME,
-                             re.MULTILINE | re.IGNORECASE)
+        matches = re.findall(r".*{0}.*".format(text),
+                             CURRENCY_NAME, re.IGNORECASE)
     except TypeError:
         return responses.JSONResponse({"Error": "Currency name not found"}, 500)
     return {"suggest": matches}
