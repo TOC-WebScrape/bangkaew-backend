@@ -46,6 +46,7 @@ services:
       - selenium_nw
     volumes:
       - ./selenium/:/selenium
+      - ./data:/selenium/data
     ports:
       - 5050:5050
     environment:

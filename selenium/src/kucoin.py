@@ -21,8 +21,8 @@ class KuCoinScript(ScriptTemplate):
         actual_name = name + str(current_page_number)
         self.write_to_txt(text=raw_data.get_attribute(
             "innerHTML"), name=actual_name)
-        output = extract_coin_data(data=raw_data, option='bm')
-        output.to_csv('../data/'+actual_name+'.csv', index=False)
+        output = extract_coin_data(data=raw_data, option='kc')
+        output.to_csv('./data/kc.csv', index=False)
 
     def format_name(self, index):
         url = self.get_list_tab()[index]

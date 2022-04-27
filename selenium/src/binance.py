@@ -18,7 +18,7 @@ class BinanceScript(ScriptTemplate):
             "innerHTML"), name=actual_name)
         output = extract_coin_data(data=raw_data.get_attribute(
             "innerHTML"), option='bn')
-        output.to_csv('../data/'+actual_name+'.csv', index=False)
+        output.to_csv('./data/bn.csv', index=False)
 
     def format_name(self, index):
         url = self.get_list_tab()[index]
