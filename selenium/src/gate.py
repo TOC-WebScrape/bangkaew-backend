@@ -1,5 +1,6 @@
 import time
 from .script_template import ScriptTemplate
+from .custom_regex import extract_coin_data
 
 
 class GateScript(ScriptTemplate):
@@ -16,6 +17,8 @@ class GateScript(ScriptTemplate):
         current_page_number = self.get_current_tab_index() + 1
         actual_name = name + str(current_page_number)
         self.write_to_txt(text=data_to_write, name=actual_name)
+        output = extract_coin_data(data=data_to_write, option='g')
+        output.to_csv('../../data/'+actual_name+'.csv', index=False)
 
     def format_name(self, index):
         url = self.get_list_tab()[index]
