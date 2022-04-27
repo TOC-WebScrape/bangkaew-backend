@@ -9,7 +9,7 @@ services:
     restart: unless-stopped
     shm_size: 2gb
     environment:
-      - SE_NODE_MAX_SESSIONS=4
+      - SE_NODE_MAX_SESSIONS=1
       - SE_NODE_OVERRIDE_MAX_SESSIONS=true
       - START_XVFB=false
     ports:
