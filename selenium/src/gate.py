@@ -19,7 +19,6 @@ class GateScript(ScriptTemplate):
         self.write_to_txt(text=data_to_write, name=actual_name)
         output = extract_coin_data(data=data_to_write, option='g')
         output.to_csv('./data/g.csv', index=False)
-        print('Here!!!')
 
     def format_name(self, index):
         url = self.get_list_tab()[index]

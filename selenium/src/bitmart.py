@@ -22,7 +22,7 @@ class BitMartScript(ScriptTemplate):
         actual_name = name + str(current_page_number)
         self.write_to_txt(text=raw_data, name=actual_name)
         output = extract_coin_data(data=raw_data, option='bm')
-        print(output.to_csv('./data/bm.csv', index=False))
+        output.to_csv('./data/bm.csv', index=False)
 
     def format_name(self, index):
         url = self.get_list_tab()[index]
