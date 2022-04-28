@@ -77,13 +77,13 @@ def get_name_currency_list():
 CURRENCY_NAME = get_name_currency_list()
 
 
-def get_data_currency(currency_id: str, cex: str):
+def get_data_currency(currency_name: str, cex: str):
     data = {}
     for filename in cex:
         try:
             df = pd.read_csv(f"./data/{filename}.csv")
             data[filename] = df.loc[df["name"] ==
-                                    f"{currency_id.upper()}/USDT"].to_dict()
+                                    f"{currency_name.upper()}"].to_dict()
         except:
             break
     return data
@@ -104,4 +104,5 @@ async def suggestion(text: str = ""):
 @app.get("/api/currency/{name}")
 async def currency(name: str, cex: str = "bn,bm,g,kc"):
     cex = cex.split(',')
+    name = name.replace(".", "/")
     return get_data_currency(name, cex)
