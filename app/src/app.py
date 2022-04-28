@@ -1,7 +1,9 @@
+import os
 import re
 import typing
 from fastapi import FastAPI, responses
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 import orjson
 import pandas as pd
 
@@ -15,56 +17,13 @@ class ORJSONResponse(JSONResponse):
 
 app = FastAPI()
 
-# test_str = ("BTC/USDT\n"
-#             "DOGE/USDT\n"
-#             "ETH/USDT\n"
-#             "APE/USDT\n"
-#             "BUSD/USDT\n"
-#             "GMT/USDT\n"
-#             "LUNA/USDT\n"
-#             "BNB/USDT\n"
-#             "SHIB/USDT\n"
-#             "NEAR/USDT\n"
-#             "UST/USDT\n"
-#             "XRP/USDT\n"
-#             "SOL/USDT\n"
-#             "USDC/USDT\n"
-#             "JASMY/USDT\n"
-#             "ROSE/USDT\n"
-#             "ADA/USDT\n"
-#             "AVAX/USDT\n"
-#             "RUNE/USDT\n"
-#             "DOT/USDT\n"
-#             "SLP/USDT\n"
-#             "FTM/USDT\n"
-#             "ZIL/USDT\n"
-#             "CAKE/USDT\n"
-#             "TRX/USDT\n"
-#             "KNC/USDT\n"
-#             "SAND/USDT\n"
-#             "MATIC/USDT\n"
-#             "GALA/USDT\n"
-#             "GRT/USDT\n"
-#             "WAVES/USDT\n"
-#             "ATOM/USDT\n"
-#             "ZRX/USDT\n"
-#             "KAVA/USDT\n"
-#             "EOS/USDT\n"
-#             "FIL/USDT\n"
-#             "LINK/USDT\n"
-#             "AAVE/USDT\n"
-#             "XMR/USDT\n"
-#             "EUR/USDT\n"
-#             "VET/USDT\n"
-#             "ETC/USDT\n"
-#             "MANA/USDT\n"
-#             "LTC/USDT\n"
-#             "AXS/USDT\n"
-#             "CRV/USDT\n"
-#             "SNX/USDT\n"
-#             "ENS/USDT\n"
-#             "GLMR/USDT\n"
-#             "DAR/USDT")
+origins = os.getenv('CORS').split(',')
+
+app.add_middleware(CORSMiddleware,
+                   allow_origins=origins,
+                   allow_credentials=True,
+                   allow_methods=["*"],
+                   allow_headers=["*"],)
 
 
 FILENAMES = ["bn", "bm", "g", "kc"]
