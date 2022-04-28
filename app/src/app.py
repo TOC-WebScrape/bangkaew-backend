@@ -1,6 +1,17 @@
 import re
+import typing
 from fastapi import FastAPI, responses
+from fastapi.responses import JSONResponse
+import orjson
 import pandas as pd
+
+
+class ORJSONResponse(JSONResponse):
+    media_type = "application/json"
+
+    def render(self, content: typing.Any) -> bytes:
+        return orjson.dumps(content, option=orjson.OPT_NON_STR_KEYS)
+
 
 app = FastAPI()
 
@@ -82,10 +93,11 @@ def get_data_currency(currency_name: str, cex: str):
     for filename in cex:
         try:
             df = pd.read_csv(f"./data/{filename}.csv")
-            data[filename] = df.loc[df["name"] ==
-                                    f"{currency_name.upper()}"].to_dict()
+            df.set_index('name', inplace=True)
+            data[filename] = df.loc[df.index.str.contains(
+                f"{currency_name.upper()}")].to_dict()
         except:
-            break
+            continue
     return data
 
 
@@ -101,8 +113,7 @@ async def suggestion(text: str = ""):
     return {"suggest": matches[:10]}
 
 
-@app.get("/api/currency/{name}")
+@app.get("/api/currency/{name}", response_class=ORJSONResponse)
 async def currency(name: str, cex: str = "bn,bm,g,kc"):
     cex = cex.split(',')
-    name = name.replace(".", "/")
     return get_data_currency(name, cex)
