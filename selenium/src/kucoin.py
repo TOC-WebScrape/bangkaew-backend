@@ -1,4 +1,6 @@
+import time
 from .script_template import ScriptTemplate
+from .custom_regex import extract_coin_data
 
 
 class KuCoinScript(ScriptTemplate):
@@ -7,17 +9,21 @@ class KuCoinScript(ScriptTemplate):
                          actual_script_xpath_target=actual_script_xpath_target, post_script_xpath_target=post_script_xpath_target)
 
     def pre_script(self, xpath_target):
-        # Wait to render
+        time.sleep(2)
         self.wait_to_load_and_click(xpath_target[0])
         self.wait_to_load_and_click(xpath_target[1])
 
     def post_script(self, xpath_target, name):
+        time.sleep(2)
         # Extract raw HTML
         raw_data = self.get_element(xpath_target[0])
         current_page_number = self.get_current_tab_index() + 1
         actual_name = name + str(current_page_number)
         self.write_to_txt(text=raw_data.get_attribute(
             "innerHTML"), name=actual_name)
+        output = extract_coin_data(data=raw_data.get_attribute(
+            "innerHTML"), option='kc')
+        output.to_csv('./data/kc.csv', index=False)
 
     def format_name(self, index):
         url = self.get_list_tab()[index]
