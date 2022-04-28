@@ -18,7 +18,6 @@ class ORJSONResponse(JSONResponse):
 app = FastAPI()
 
 origins = os.getenv('CORS').split(',')
-
 app.add_middleware(CORSMiddleware,
                    allow_origins=origins,
                    allow_credentials=True,
@@ -35,13 +34,13 @@ def get_name_currency_list():
     for filename in FILENAMES:
         try:
             df = pd.read_csv(f"./data/{filename}.csv")
-            list_name = df["name"].tolist()
+            for i in df["name"].tolist():
+                list_name.append(i.split('/')[0])
             for n in list_name:
-                x = n+'\n'
-                names[x] = names.get(x, None)
+                names[n] = names.get(n, None)
         except:
             continue
-    return "\n".join(names.keys())
+    return list(names.keys())
 
 
 CURRENCY_NAME = get_name_currency_list()
@@ -60,16 +59,9 @@ def get_data_currency(currency_name: str, cex: str):
     return data
 
 
-@app.get("/api/suggest")
-async def suggestion(text: str = ""):
-    if len(text) == 0:
-        return "Please type something"
-    try:
-        matches = re.findall(r".*{0}.*".format(text),
-                             CURRENCY_NAME, re.IGNORECASE | re.MULTILINE)
-    except TypeError:
-        return responses.JSONResponse({"Error": "Currency name not found"}, 500)
-    return {"suggest": matches[:10]}
+@app.get("/api/currency-name")
+async def suggestion():
+    return {"result": CURRENCY_NAME}
 
 
 @app.get("/api/currency/{name}", response_class=ORJSONResponse)
