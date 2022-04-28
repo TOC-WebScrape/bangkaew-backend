@@ -35,7 +35,8 @@ def get_name_currency_list():
     for filename in FILENAMES:
         try:
             df = pd.read_csv(f"./data/{filename}.csv")
-            list_name = df["name"].tolist()
+            for i in df["name"].tolist():
+                list_name.append(i.split('/')[0])
             for n in list_name:
                 x = n+'\n'
                 names[x] = names.get(x, None)
